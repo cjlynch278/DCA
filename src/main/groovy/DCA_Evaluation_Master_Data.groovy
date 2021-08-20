@@ -22,21 +22,18 @@ import com.collibra.dgc.core.api.dto.instance.asset.SetAssetAttributesRequest
 
 import com.collibra.dgc.core.api.dto.instance.attribute.ChangeAttributeRequest
 
-loggerApi.info("---------------------------------------------------------------------------------------------------------")
-
-def metricAttributeId = string2Uuid("ec9180ea-dc3e-4f9a-95d9-157e1a685269")
-def uniqueIdentifierId = string2Uuid("a6c7a5b4-135e-4a58-8239-832b796ce668")
-def multiSystemId = string2Uuid("bcabba1e-29dc-43f9-8171-db32047b7717")
-def hierarchicalId = string2Uuid("a447da3f-3aac-43ee-9f33-71e7a8debb2c")
-def dataTypeId = string2Uuid("5530400f-2aa8-4370-b3de-c17b07ab8539")
-
-def mdeIDKey = "79dee746-0e57-48e2-bff5-a265f9313320"
-def sdeIDKey = "2d917324-e567-43ec-ac1d-449256282ff7"
+def metricAttributeId = string2Uuid(execution.getVariable("metricAttributeId"))
+def uniqueIdentifierId = string2Uuid(execution.getVariable("uniqueIdentifierId"))
+def multiSystemId = string2Uuid(execution.getVariable("multiSystemId"))
+def hierarchicalId = string2Uuid(execution.getVariable("hierarchicalId"))
+def dataTypeId = string2Uuid(execution.getVariable("dataTypeId"))
+def mdeIDKey = execution.getVariable("mdeIDKey")
+def sdeIDKey = execution.getVariable("sdeIDKey")
 
 
 //Keys for relationships
-def UIFRelationship = 'd6ffc755-1bcb-4461-ad77-32c1054a9b12'
-def columnRelationship = '97023b62-67a4-48f7-beba-972a2239e804'
+def UIFRelationship = execution.getVariable("UIFRelationship")
+def columnRelationship = execution.getVariable("columnRelationship")
 
 def sdeBool = false
 def mdeBool = false
@@ -63,7 +60,7 @@ for(relation in relationsResponse.results[0]) {
 	}
 	
 	currentAssetStatusBool = false
-	if(currentAsset.getStatus().getName().toString() == 'Approved')
+	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
 		currentAssetStatusBool = true
 	
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
