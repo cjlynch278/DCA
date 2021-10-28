@@ -43,17 +43,19 @@ def multiSystemBool = false
 def hierarchicalBool = false
 
 
-//Get all attributes of currently selected asset
+//Get all source relations of currently selected asset
 def relationsResponse = relationApi.findRelations(
 	FindRelationsRequest.builder()
 		.sourceId(item.id)
 		.build()
 	)
 
-for(relation in relationsResponse.results[0]) {
+for(relation in relationsResponse.getResults()) {
 	
 	Asset currentAsset = assetApi.getAsset(relation.target.id)
 	currentAssetType = currentAsset.getType().getId().toString()
+	loggerApi.info("CurrentAsset type : " + currentAssetType)
+	loggerApi.info("SDE Key " + sdeIDKey)
 	uifOrColumRelationBool = false
 	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
 		uifOrColumRelationBool = true
@@ -72,6 +74,38 @@ for(relation in relationsResponse.results[0]) {
 	
 }
 
+//Get all target relations of currently selected asset
+def targetRelationsResponse = relationApi.findRelations(
+	FindRelationsRequest.builder()
+		.targetId(item.id)
+		.build()
+	)
+
+for(relation in targetRelationsResponse.getResults()) {
+	
+	Asset currentAsset = assetApi.getAsset(relation.target.id)
+	currentAssetType = currentAsset.getType().getId().toString()
+	loggerApi.info("CurrentAsset type : " + currentAssetType)
+	loggerApi.info("SDE Key " + sdeIDKey)
+	uifOrColumRelationBool = false
+	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
+		uifOrColumRelationBool = true
+	}
+	
+	currentAssetStatusBool = false
+	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
+		currentAssetStatusBool = true
+	
+	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		mdeBool = true
+	}
+	else if(currentAssetType == sdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		sdeBool = true
+	}
+	
+}
+
+
 //Get Used in Enterprise Metric or KPI attribute
 kpiBool = getAttribute(metricAttributeId)
 loggerApi.info("KPI Bool: " + kpiBool)
@@ -89,7 +123,7 @@ loggerApi.info("Sde Bool: " + sdeBool)
 loggerApi.info("MDE Bool: " + mdeBool)
 
 
-if( mdeBool == null && sdeBool == null && kpiBool == null && multiSystemBool == null && uniqueIdBool == null && hierarchicalBool == null)
+if( mdeBool == false && sdeBool == false && kpiBool == null && multiSystemBool == null && uniqueIdBool == null && hierarchicalBool == null)
 	setDcaAttribute("Needs Assessment")
 else if(mdeBool) 
 	setDcaAttribute("Enterprise Master Data")
