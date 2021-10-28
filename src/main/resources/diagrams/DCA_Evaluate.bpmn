@@ -79,15 +79,25 @@ def relationsResponse = relationApi.findRelations(
 		.build()
 	)
 
-for(relation in relationsResponse.results[0]) {
-	
+for(relation in relationsResponse.getResults()) {
+	loggerApi.info("Relation "  + relation.getType().toString() )
 	Asset currentAsset = assetApi.getAsset(relation.target.id)
 	currentAssetType = currentAsset.getType().getId().toString()
-	uifOrColumRelationBool = false
-	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
-		uifOrColumRelationBool = true
-	}
+	loggerApi.info("current target asset type " + currentAsset.getType())
+	loggerApi.info("currentAssetType " + currentAssetType)
+	loggerApi.info("sde key " + sdeIDKey)
+	def debug = (currentAssetType == sdeIDKey).toString()
+	loggerApi.info("SDE type keey? " + debug )
 	
+	
+	
+	
+	currentAssetType = currentAsset.getType().getId().toString()
+ 	uifOrColumRelationBool = true
+//	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
+//		uifOrColumRelationBool = true
+//	}
+	loggerApi.info("uior column bool: " + uifOrColumRelationBool)
 	currentAssetStatusBool = false
 	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
 		currentAssetStatusBool = true
@@ -118,7 +128,7 @@ loggerApi.info("Sde Bool: " + sdeBool)
 loggerApi.info("MDE Bool: " + mdeBool)
 
 
-if( mdeBool == null && sdeBool == null && kpiBool == null && multiSystemBool == null && uniqueIdBool == null && hierarchicalBool == null)
+if( mdeBool == false && sdeBool == false && kpiBool == null && multiSystemBool == null && uniqueIdBool == null && hierarchicalBool == null)
 	setDcaAttribute("Needs Assessment")
 else if(mdeBool) 
 	setDcaAttribute("Enterprise Master Data")
