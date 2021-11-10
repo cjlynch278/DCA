@@ -4,7 +4,7 @@
     <participant id="workflow" name="Workflow" processRef="dcaEvaluate"></participant>
   </collaboration>
   <process id="dcaEvaluate" name="DCA Evaluate" isExecutable="true">
-    <documentation>Evaluate attributes of given asset(s) and determine what the data criticality assesment.</documentation>
+    <documentation>Evaluate attributes of selected asset(s) to determine the criticality of data.</documentation>
     <laneSet id="laneSet_dcaEvaluate">
       <lane id="lane1">
         <flowNodeRef>startevent1</flowNodeRef>
