@@ -85,15 +85,21 @@ for(relation in relationsResponse.getResults()) {
 	currentAssetType = currentAsset.getType().getId().toString()
 	loggerApi.info("CurrentAsset type : " + currentAssetType)
 	loggerApi.info("SDE Key " + sdeIDKey)
+	loggerApi.info("Current Relation Type: " + relation.getType().getId().toString())
+	
 	uifOrColumRelationBool = false
 	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
 		uifOrColumRelationBool = true
 	}
+	loggerApi.info("uifOrColumRelationBool: " + uifOrColumRelationBool)
 	
 	currentAssetStatusBool = false
-	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
+	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted') {
+		loggerApi.info("Flipping status bool to true")
 		currentAssetStatusBool = true
-	
+	}
+	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
+		
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		mdeBool = true
 	}
@@ -112,18 +118,25 @@ def targetRelationsResponse = relationApi.findRelations(
 
 for(relation in targetRelationsResponse.getResults()) {
 	
-	Asset currentAsset = assetApi.getAsset(relation.target.id)
+	Asset currentAsset = assetApi.getAsset(relation.source.id)
 	currentAssetType = currentAsset.getType().getId().toString()
 	loggerApi.info("CurrentAsset type : " + currentAssetType)
 	loggerApi.info("SDE Key " + sdeIDKey)
+	loggerApi.info("Current Relation Type: " + relation.getType().getId().toString())
+	
 	uifOrColumRelationBool = false
 	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
 		uifOrColumRelationBool = true
 	}
+	loggerApi.info("uifOrColumRelationBool: " + uifOrColumRelationBool)
 	
 	currentAssetStatusBool = false
-	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
+	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted') {
+		loggerApi.info("Flipping status bool to true")
 		currentAssetStatusBool = true
+	}
+	
+	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
 	
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		mdeBool = true
@@ -230,14 +243,14 @@ def getAttribute(attributeId) {
         <omgdc:Bounds height="35.0" width="35.0" x="550.0" y="370.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
-        <omgdc:Bounds height="81.0" width="125.0" x="360.0" y="350.0"></omgdc:Bounds>
+        <omgdc:Bounds height="81.0" width="125.0" x="360.0" y="347.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="325.0" y="387.0"></omgdi:waypoint>
-        <omgdi:waypoint x="360.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="387.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="485.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="485.0" y="387.0"></omgdi:waypoint>
         <omgdi:waypoint x="550.0" y="387.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

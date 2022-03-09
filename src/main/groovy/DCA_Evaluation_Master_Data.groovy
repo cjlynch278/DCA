@@ -56,15 +56,21 @@ for(relation in relationsResponse.getResults()) {
 	currentAssetType = currentAsset.getType().getId().toString()
 	loggerApi.info("CurrentAsset type : " + currentAssetType)
 	loggerApi.info("SDE Key " + sdeIDKey)
+	loggerApi.info("Current Relation Type: " + relation.getType().getId().toString())
+	
 	uifOrColumRelationBool = false
 	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
 		uifOrColumRelationBool = true
 	}
+	loggerApi.info("uifOrColumRelationBool: " + uifOrColumRelationBool)
 	
 	currentAssetStatusBool = false
-	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
+	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted') {
+		loggerApi.info("Flipping status bool to true")
 		currentAssetStatusBool = true
-	
+	}
+	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
+		
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		mdeBool = true
 	}
@@ -83,18 +89,25 @@ def targetRelationsResponse = relationApi.findRelations(
 
 for(relation in targetRelationsResponse.getResults()) {
 	
-	Asset currentAsset = assetApi.getAsset(relation.target.id)
+	Asset currentAsset = assetApi.getAsset(relation.source.id)
 	currentAssetType = currentAsset.getType().getId().toString()
 	loggerApi.info("CurrentAsset type : " + currentAssetType)
 	loggerApi.info("SDE Key " + sdeIDKey)
+	loggerApi.info("Current Relation Type: " + relation.getType().getId().toString())
+	
 	uifOrColumRelationBool = false
 	if(relation.getType().getId().toString() == UIFRelationship || relation.getType().getId().toString() == columnRelationship) {
 		uifOrColumRelationBool = true
 	}
+	loggerApi.info("uifOrColumRelationBool: " + uifOrColumRelationBool)
 	
 	currentAssetStatusBool = false
-	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted')
+	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted') {
+		loggerApi.info("Flipping status bool to true")
 		currentAssetStatusBool = true
+	}
+	
+	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
 	
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		mdeBool = true
