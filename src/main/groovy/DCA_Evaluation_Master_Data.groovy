@@ -72,9 +72,11 @@ for(relation in relationsResponse.getResults()) {
 	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
 		
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching mdeBool to True")
 		mdeBool = true
 	}
 	else if(currentAssetType == sdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching sdeBool to True")
 		sdeBool = true
 	}
 	
@@ -110,9 +112,11 @@ for(relation in targetRelationsResponse.getResults()) {
 	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
 	
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching mdeBool to True")
 		mdeBool = true
 	}
 	else if(currentAssetType == sdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching sdeBool to True")
 		sdeBool = true
 	}
 	
@@ -165,7 +169,7 @@ def setDcaAttribute(dataValue) {
 		SetAssetAttributesRequest.builder()
 			.assetId(item.id)
 			.values([dataValue])
-			.typeId(string2Uuid("5530400f-2aa8-4370-b3de-c17b07ab8539"))
+			.typeId(string2Uuid(dataCriticalityAttributeId))
 			.build()
 		)
 }
