@@ -27,8 +27,12 @@ def uniqueIdentifierId = string2Uuid(execution.getVariable("uniqueIdentifierId")
 def multiSystemId = string2Uuid(execution.getVariable("multiSystemId"))
 def hierarchicalId = string2Uuid(execution.getVariable("hierarchicalId"))
 def dataTypeId = string2Uuid(execution.getVariable("dataTypeId"))
+def entMdeIDKey = execution.getVariable("entMdeIDKey")
 def mdeIDKey = execution.getVariable("mdeIDKey")
 def sdeIDKey = execution.getVariable("sdeIDKey")
+def singleAppDataKey = execution.getVariable("singleAppDataKey")
+
+
 
 
 //Keys for relationships
@@ -37,6 +41,8 @@ def columnRelationship = execution.getVariable("columnRelationship")
 
 def sdeBool = false
 def mdeBool = false
+def entMdeBool = false
+def singleAppBool = false
 def kpiBool = false
 def uniqueIdBool= false
 def multiSystemBool = false
@@ -63,14 +69,13 @@ for(relation in relationsResponse.getResults()) {
 		uifOrColumRelationBool = true
 	}
 	loggerApi.info("uifOrColumRelationBool: " + uifOrColumRelationBool)
-	
 	currentAssetStatusBool = false
 	if(currentAsset.getStatus().getName().toString() == 'Approved' || currentAsset.getStatus().getName().toString() == 'Accepted') {
 		loggerApi.info("Flipping status bool to true")
 		currentAssetStatusBool = true
 	}
 	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
-		
+
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		loggerApi.info("Switching mdeBool to True")
 		mdeBool = true
@@ -78,6 +83,14 @@ for(relation in relationsResponse.getResults()) {
 	else if(currentAssetType == sdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		loggerApi.info("Switching sdeBool to True")
 		sdeBool = true
+	}
+	else if(currentAssetType == singleAppDataKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching singleAppBool to True")
+		singleAppBool = true
+	}	
+	else if(currentAssetType == entMdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching entMdeBool to True")
+		entMdeBool = true
 	}
 	
 }
@@ -108,9 +121,8 @@ for(relation in targetRelationsResponse.getResults()) {
 		loggerApi.info("Flipping status bool to true")
 		currentAssetStatusBool = true
 	}
-	
 	loggerApi.info("currentAssetStatusBool: " + currentAssetStatusBool)
-	
+
 	if(currentAssetType == mdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
 		loggerApi.info("Switching mdeBool to True")
 		mdeBool = true
@@ -119,13 +131,19 @@ for(relation in targetRelationsResponse.getResults()) {
 		loggerApi.info("Switching sdeBool to True")
 		sdeBool = true
 	}
+	else if(currentAssetType == singleAppDataKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching singleAppBool to True")
+		singleAppBool = true
+	}	
+	else if(currentAssetType == entMdeIDKey && currentAssetStatusBool && uifOrColumRelationBool) {
+		loggerApi.info("Switching entMdeBool to True")
+		entMdeBool = true
+	}
+	
 	
 }
 
-
-//Get Used in Enterprise Metric or KPI attribute
-kpiBool = getAttribute(metricAttributeId)
-loggerApi.info("KPI Bool: " + kpiBool)
+loggerApi.info("SingleAppData Bool: " + singleAppBool)
 
 uniqueIdBool = getAttribute(uniqueIdentifierId)
 loggerApi.info("Unique ID Bool: " + uniqueIdBool)
@@ -138,26 +156,33 @@ loggerApi.info("Hierarchical Bool: " + hierarchicalBool)
 
 loggerApi.info("Sde Bool: " + sdeBool)
 loggerApi.info("MDE Bool: " + mdeBool)
+loggerApi.info("ENT MDE Bool: " + entMdeBool)
 
 
-if( mdeBool == false && sdeBool == false && kpiBool == null && multiSystemBool == null && uniqueIdBool == null && hierarchicalBool == null)
+if( singleAppBool == false && entMdeBool == false && mdeBool == false && sdeBool == false && kpiBool == null && multiSystemBool == null && uniqueIdBool == null && hierarchicalBool == null)
 	setDcaAttribute("Needs Assessment")
 else if(mdeBool) 
-	setDcaAttribute("Enterprise Master Data")
+	setDcaAttribute("Master Data")
 else if(sdeBool)
-	setDcaAttribute("Enterprise Shared Data")
-else if(kpiBool)
+	setDcaAttribute("Shared Data")
+else if(entMdeBool){
+	loggerApi.info("Changing attribute to enterprise Master Data" )
 	setDcaAttribute("Enterprise Master Data")
+}
+else if (singleAppBool)
+	setDcaAttribute("Single Application Data")
+//else if(kpiBool)
+	//("Enterprise Master Data")
 else if(multiSystemBool == false)
 	setDcaAttribute("Single Application Data")
 else if(multiSystemBool == null)
 	setDcaAttribute("Needs Assessment")
 else if(uniqueIdBool)	
-	setDcaAttribute("Enterprise Master Data")
+	setDcaAttribute("Master Data")
 else if(hierarchicalBool)
-	setDcaAttribute("Enterprise Master Data")
+	setDcaAttribute("Master Data")
 else if(!hierarchicalBool )
-	setDcaAttribute("Enterprise Shared Data")
+	setDcaAttribute("Shared Data")
 else
 	loggerApi.warn("No logic exists to change DCA type")
 
